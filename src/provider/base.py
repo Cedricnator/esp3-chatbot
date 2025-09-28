@@ -1,7 +1,12 @@
-class BaseProvider:
-    def chat(self, message, **kwargs):
-        raise NotImplementedError("The chat method must be implemented by subclasses.")
+from abc import ABC, abstractmethod
+from typing import Any
+
+class BaseProvider(ABC):
+    @abstractmethod
+    def chat(self, message: str, **kwargs: Any) -> Any:
+        pass
 
     @property
-    def name(self):
-        raise NotImplementedError("The name property must be implemented by subclasses.")
+    @abstractmethod
+    def name(self) -> str:
+        return ""

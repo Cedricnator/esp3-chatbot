@@ -1,15 +1,19 @@
 import os
 from openai import OpenAI
+from typing import Any
 
 from provider.base import BaseProvider
 
 
 class ChatGPTProvider(BaseProvider):
+    def __init__(self) -> None:
+        self._provider = "ChatGPT"
+
     @property
     def name(self):
-        return "ChatGPT"
+        return self._provider
 
-    def chat(self, message, **kwargs):
+    def chat(self, message: str, **kwargs: Any) -> Any:
         """
         Send a user message to OpenAI and return the assistant reply.
         Accepts optional kwargs: model, temperature, max_tokens.
@@ -52,24 +56,24 @@ class ChatGPTProvider(BaseProvider):
             try:
                 choices = getattr(resp, "choices", None)
                 if not choices:
-                    choices = resp.get("choices") if isinstance(resp, dict) else None
+                    choices = resp.get("choices") if isinstance(resp, dict) else None # type: ignore
 
-                if choices and len(choices) > 0:
-                    first = choices[0]
-                    msg = getattr(first, "message", None)
+                if choices and len(choices) > 0: # type: ignore
+                    first = choices[0] # type: ignore
+                    msg = getattr(first, "message", None) # type: ignore
                     if msg is not None:
                         content = getattr(msg, "content", None)
                         if content:
                             return content.strip()
 
-                    text = getattr(first, "text", None)
+                    text = getattr(first, "text", None) # type: ignore
                     if text:
                         return text.strip()
 
                     if isinstance(first, dict):
-                        text = first.get("message", {}).get("content") or first.get("text")
+                        text = first.get("message", {}).get("content") or first.get("text") # type: ignore
                         if text:
-                            return text.strip()
+                            return text.strip() # type: ignore
 
             except Exception as e:
                 return f"[ChatGPT error] extraction failure: {e}"
