@@ -3,10 +3,11 @@ import os
 from openai import OpenAI
 from typing import Any
 from provider.base import BaseProvider
-
+from adapters.logger_adapter import LoggerAdapter
 
 class DeepSeekProvider(BaseProvider):
-    def __init__(self) -> None:
+    def __init__(self, logger: LoggerAdapter) -> None:
+        self._logger = logger
         self._provider = "DeepSeek"
 
     @property
@@ -50,7 +51,7 @@ class DeepSeekProvider(BaseProvider):
                 raw = resp.to_dict() if hasattr(resp, "to_dict") else repr(resp)
             except Exception:
                 raw = repr(resp)
-            print("RAW DEEPSEEK RESPONSE:", raw)
+            self._logger.info(f"RAW DEEPSEEK RESPONSE: {raw}")
 
             # Primary extraction
             try:

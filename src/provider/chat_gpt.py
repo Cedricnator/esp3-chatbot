@@ -1,12 +1,13 @@
 import os
 from openai import OpenAI
 from typing import Any
-
+from adapters.logger_adapter import LoggerAdapter
 from provider.base import BaseProvider
 
 
 class ChatGPTProvider(BaseProvider):
-    def __init__(self) -> None:
+    def __init__(self, logger: LoggerAdapter) -> None:
+        self._logger = logger
         self._provider = "ChatGPT"
 
     @property
@@ -50,7 +51,7 @@ class ChatGPTProvider(BaseProvider):
                 raw = resp.to_dict() if hasattr(resp, "to_dict") else repr(resp)
             except Exception:
                 raw = repr(resp)
-            print("RAW CHATGPT RESPONSE:", raw)
+            self._logger.info(f"RAW CHATGPT RESPONSE: {raw}")
 
             # Primary extraction: attribute-style
             try:
