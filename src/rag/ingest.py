@@ -11,10 +11,14 @@ from pdfminer.high_level import extract_text  # type: ignore
 from pdfminer.pdfpage import PDFPage # type: ignore
 from typing import Any, Optional
 
+from adapters.logger_adapter import LoggerAdapter
+from adapters.logger_strdin import LoggerStdin
+
 class Ingestor:
-    def __init__(self, csv_path: str, output_dir: str) -> None:
+    def __init__(self, csv_path: str, output_dir: str, logger: LoggerAdapter) -> None:
         self._csv_path = Path(csv_path).resolve()
         self._output_dir = Path(output_dir).resolve()
+        self._logger = logger
         
     def extract_pages_text(self, pdf_path: str) -> list[str]:
         """Return list of page texts (1-indexed pages -> index 0 = page 1)"""
@@ -276,9 +280,9 @@ class Ingestor:
         mapping_path = output_dir_path / "mapping.parquet"
         mapping.to_parquet(mapping_path, index=False)
 
-        print(f"Saved FAISS index to: {index_path}")
-        print(f"Saved chunks to: {chunks_path}")
-        print(f"Saved mapping to: {mapping_path}")
+        self._logger.info(f"Saved FAISS index to: {index_path}")
+        self._logger.info(f"Saved chunks to: {chunks_path}")
+        self._logger.info(f"Saved mapping to: {mapping_path}")
 
         return {
             "index_path": str(index_path),
@@ -288,10 +292,11 @@ class Ingestor:
 
 
 if __name__ == "__main__":
+    ingest_logger = LoggerStdin("ingest", "logs/ingest.log")
     project_root = Path(__file__).resolve().parents[2]
     csv_path = project_root / "data" / "sources.csv"
     output_dir = project_root / "data" / "processed"
-    ingestor = Ingestor(str(csv_path), str(output_dir))
+    ingestor = Ingestor(csv_path=str(csv_path), output_dir=str(output_dir), logger=ingest_logger)
 
     results = ingestor.process_csv()
-    print("Done:", results)
+    ingest_logger.info(f"Done: {results}")
