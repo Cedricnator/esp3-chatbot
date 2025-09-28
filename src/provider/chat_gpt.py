@@ -28,9 +28,9 @@ class ChatGPTProvider(BaseProvider):
                 response += f" with additional parameters: {kwargs}"
             return response
 
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 
-        model = kwargs.pop("model", "gpt-5-nano")
+        model = kwargs.pop("model", "openai/gpt-5-nano")
         temperature = kwargs.pop("temperature", 0.2)
         max_tokens = kwargs.pop("max_tokens", 256)
 
