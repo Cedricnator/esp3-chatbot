@@ -14,7 +14,7 @@ class DeepSeekProvider(BaseProvider):
     def name(self) -> str:
         return self._provider
     
-    def chat(self, message: str, **kwargs: Any) -> Any:
+    def chat(self, system_prompt: str, message: str, **kwargs: Any) -> Any:
         """
         Send a user message to OpenAI and return the assistant reply.
         Accepts optional kwargs: model, temperature, max_tokens, and any
@@ -38,7 +38,7 @@ class DeepSeekProvider(BaseProvider):
             resp = client.chat.completions.create(
                 model="deepseek/deepseek-chat-v3.1:free",
                 messages=[
-                    {"role": "system", "content": "You are DeepSeek, a helpful search-assistant."},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": message},
                 ],
                 temperature=temperature,

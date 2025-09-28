@@ -3,7 +3,7 @@ from typing import Any
 
 class BaseProvider(ABC):
     @abstractmethod
-    def chat(self, message: str, **kwargs: Any) -> Any:
+    def chat(self, system_prompt: str,  message: str, **kwargs: Any) -> Any:
         pass
 
     @property
