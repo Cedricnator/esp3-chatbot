@@ -14,7 +14,7 @@ class ChatGPTProvider(BaseProvider):
     def name(self):
         return self._provider
 
-    def chat(self, message: str, **kwargs: Any) -> Any:
+    def chat(self, system_prompt: str, message: str, **kwargs: Any) -> Any:
         """
         Send a user message to OpenAI and return the assistant reply.
         Accepts optional kwargs: model, temperature, max_tokens.
@@ -38,7 +38,7 @@ class ChatGPTProvider(BaseProvider):
             resp = client.chat.completions.create(
                 model=model,
                 messages=[
-                    {"role": "system", "content": "You are ChatGPT, a helpful assistant."},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": message},
                 ],
                 temperature=temperature,

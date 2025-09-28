@@ -7,6 +7,7 @@ from adapters.logger_adapter import LoggerAdapter
 from rag.rag_orchestrator import RAGOrchestrator
 from rag.retrieve import FaissRetriever
 from rag.re_ranker import CrossEncoderReranker
+from rag.prompts import build_synthesis_prompt
 
 load_dotenv()
 
@@ -17,6 +18,7 @@ class Main:
     def run(self):
         provider = ""
         message = ""
+        system_prompt = "You're a helpfull asistant"
 
         parser = argparse.ArgumentParser(
             description="Call DeepSeek provider with a message"
@@ -50,7 +52,7 @@ class Main:
             result = rag_orchestrator.run(query, k_retrieve=5, rerank_top_n=5, do_rewrite=True)
             self._logger.info("RAG result:")
             self._logger.info(f"{result}")
-            return
+            system_prompt =  build_synthesis_prompt(result['query'], result['hints']) # type: ignore
 
         if args.provider:
             provider: str = args.provider
@@ -59,13 +61,13 @@ class Main:
         if provider == "deepseek":
             deepseek_logger = LoggerStdin("deepseek_logger", "logs/deepseek.log")
             deepseek_provider = DeepSeekProvider(deepseek_logger)
-            response = deepseek_provider.chat(message)  # type: ignore
+            response = deepseek_provider.chat(system_prompt, message)
             self._logger.info("\nDeepSeek response:")
-            self._logger.info(response)  # type: ignore
+            self._logger.info(response)
         elif provider == "chatgpt":
             chatgpt_logger = LoggerStdin("chatgpt_logger", "logs/chatgpt.log")
             chatgpt_provider = ChatGPTProvider(chatgpt_logger)
-            response = chatgpt_provider.chat(message)
+            response = chatgpt_provider.chat(system_prompt,message)
             self._logger.info("\nChatGpt response:")
             self._logger.info(response)
         else:

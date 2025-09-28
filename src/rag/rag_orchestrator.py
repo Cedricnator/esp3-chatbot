@@ -44,7 +44,6 @@ class RAGOrchestrator:
     ranked = self._rank_candidates(rewritten_query, candidates, rerank_top_n)
 
     return {
-      "original_query": query,
       "query": rewritten_query,
       "hints": ranked,
     }
