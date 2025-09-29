@@ -1,0 +1,214 @@
+{
+	"version": "1.0",
+	"created_at": "2025-09-28",
+	"language": "es",
+	"items": [
+		{
+			"id": "RREP-001",
+			"query": "¿Cuál es la escala de notas y la nota mínima de aprobación establecida en el Reglamento de Régimen de Estudios?",
+			"expected_answer": "La escala va de 1,0 a 7,0 y la nota mínima para aprobar una actividad curricular es 4,0; las calificaciones se expresan con un decimal, redondeando las centésimas iguales o mayores a 5 hacia arriba.",
+			"references": [
+				{
+					"doc_id": "000-reglamento-régimen-de-estudios-de-pregrado",
+					"title": "Reglamento Régimen de Estudios de Pregrado",
+					"page": 24,
+					"snippet": "ARTÍCULO 29º: ... escala de notas que va desde 1,0 al 7,0, siendo la nota mínima de aprobación 4,0. ARTÍCULO 30º: Todas las notas se expresarán en cifras con un decimal..."
+				}
+			],
+			"rubric": [
+				"Debe mencionar el rango 1,0 a 7,0.",
+				"Debe señalar que la nota mínima de aprobación es 4,0.",
+				"Debe indicar que las notas se expresan con un decimal y se redondean las centésimas ≥5."
+			]
+		},
+		{
+			"id": "RREP-002",
+			"query": "Explica cómo se calculan el Promedio Ponderado Semestral (PPS) y el Promedio General Acumulado Aprobado (PGAA).",
+			"expected_answer": "El PPS se obtiene sumando para cada actividad curricular la nota final multiplicada por sus horas intra aula y dividiendo por el total de horas inscritas del semestre, considerando que las asignaturas bimestrales ponderan la mitad y las anuales se incorporan en el segundo semestre con doble ponderación. El PGAA promedia de manera ponderada, según horas intra aula, todas las notas finales aprobadas del plan vigente (incluidas convalidaciones, revalidaciones y libres).",
+			"references": [
+				{
+					"doc_id": "000-reglamento-régimen-de-estudios-de-pregrado",
+					"title": "Reglamento Régimen de Estudios de Pregrado",
+					"page": 28,
+					"snippet": "ARTÍCULO 41º: El Promedio Ponderado Semestral (PPS) se calculará sumando los productos 'Nota final' por 'horas intra aula'... El Promedio General Acumulado Aprobado (PGAA) será calculado promediando, en forma ponderada..."
+				}
+			],
+			"rubric": [
+				"Debe describir la fórmula del PPS (nota final × horas / total horas).",
+				"Debe mencionar el tratamiento especial de asignaturas bimestrales y anuales.",
+				"Debe indicar que el PGAA considera todas las asignaturas aprobadas con ponderación por horas."
+			]
+		},
+		{
+			"id": "RREP-003",
+			"query": "Según el artículo 61º del Reglamento de Régimen de Estudios, ¿cuáles son los requisitos para que un estudiante recién ingresado solicite transferencia de carrera?",
+			"expected_answer": "Debe solicitarla durante el primer mes del periodo académico ante la Dirección de Pregrado de su Facultad, acompañando certificación del Registro Académico Estudiantil que confirme: a) ingreso por admisión regular a la carrera de origen en el semestre en curso; b) rendición de las pruebas de selección exigidas por la carrera de destino; c) puntaje ponderado igual o superior al último matriculado en la admisión regular de la carrera de destino; y d) existencia de cupo disponible en la carrera de destino una vez cerrado el proceso regular.",
+			"references": [
+				{
+					"doc_id": "000-reglamento-régimen-de-estudios-de-pregrado",
+					"title": "Reglamento Régimen de Estudios de Pregrado",
+					"page": 39,
+					"snippet": "ARTÍCULO 61º: Los(as) estudiantes recién ingresados ... podrán solicitar transferencia ... con documentación del Registro Académico que verifique: a. Haber ingresado por admisión regular... b. Haber rendido las pruebas... c. Haber obtenido puntaje ponderado mayor o igual... d. Que exista cupo..."
+				}
+			],
+			"rubric": [
+				"Debe mencionar el plazo y la autoridad (primer mes, Dirección de Pregrado).",
+				"Debe enumerar los cuatro requisitos (admisión regular, pruebas rendidas, puntaje ≥ último matriculado, cupo disponible)."
+			]
+		},
+		{
+			"id": "ADM-001",
+			"query": "¿Qué sistemas de admisión contempla la Universidad de La Frontera en su reglamento de admisión?",
+			"expected_answer": "El reglamento establece dos sistemas de admisión para pregrado: el Sistema de Admisión Regular y el Sistema de Admisión Especial, con vacantes definidas anualmente en la oferta académica por carrera.",
+			"references": [
+				{
+					"doc_id": "001-reglamento-de-admisión",
+					"title": "Reglamento de Admisión",
+					"page": 1,
+					"snippet": "Artículo 1º: La Universidad de La Frontera dispone de dos Sistemas de Admisión... Sistema de Admisión Regular / Sistema de Admisión Especial. Artículo 2º: En ambos casos las vacantes..."
+				}
+			],
+			"rubric": [
+				"Debe nombrar explícitamente ambos sistemas (Regular y Especial).",
+				"Debe indicar que las vacantes se fijan anualmente por carrera."
+			]
+		},
+		{
+			"id": "ADM-002",
+			"query": "¿Quién resuelve las solicitudes extraordinarias de admisión especial no contempladas en el reglamento y qué antecedentes considera?",
+			"expected_answer": "Las resuelve el Vicerrector de Pregrado, quien decide considerando la solicitud y el informe emitido por la Dirección de Registro Académico Estudiantil.",
+			"references": [
+				{
+					"doc_id": "001-reglamento-de-admisión",
+					"title": "Reglamento de Admisión",
+					"page": 11,
+					"snippet": "Artículo 60º: Las solicitudes extraordinarias ... serán resueltas por el Vicerrector Pregrado, considerando la solicitud e informe de la Dirección de Registro Académico Estudiantil."
+				}
+			],
+			"rubric": [
+				"Debe identificar al Vicerrector de Pregrado como autoridad competente.",
+				"Debe citar que la decisión se basa en la solicitud y el informe de Registro Académico."
+			]
+		},
+		{
+			"id": "ADM-003",
+			"query": "Detalla los requisitos que fija el artículo 63º para postular al Sistema de Admisión Especial para egresados de establecimientos técnico-profesionales.",
+			"expected_answer": "El postulante debe haber completado todas las etapas del Sistema de Admisión Regular y cumplir simultáneamente con: a) nacionalidad chilena o cumplir los requisitos legales si es extranjero; b) egresar en los últimos tres años de un establecimiento técnico-profesional; c) ubicarse en el 30% superior de egreso; d) rendir la PAES o contar con una prueba vigente; e) postular la carrera en las tres primeras preferencias del sistema regular (si corresponde); y f) formalizar la postulación en la plataforma de la Universidad dentro de los plazos, adjuntando la documentación exigida. Las facultades pueden agregar requisitos mediante resolución previa.",
+			"references": [
+				{
+					"doc_id": "001-reglamento-de-admisión",
+					"title": "Reglamento de Admisión",
+					"page": 12,
+					"snippet": "ARTÍCULO 63°: Postulará ... la persona que haya cumplido con todas las etapas... y cumpla además con los siguientes requisitos: a. Poseer Nacionalidad Chilena... b. Haber egresado ... en los últimos tres años. c. Pertenecer al 30% superior... d. Haber rendido la Prueba ... e. Haber postulado a la carrera en las tres primeras preferencias... f. Haber formalizado su postulación ... Cada Facultad podrá solicitar requisitos adicionales..."
+				}
+			],
+			"rubric": [
+				"Debe indicar que se requiere haber completado el proceso regular y enumerar los literales a-f.",
+				"Debe mencionar la posibilidad de requisitos adicionales fijados por facultades."
+			]
+		},
+		{
+			"id": "FIN-001",
+			"query": "¿Qué define el artículo 3° del Reglamento de Obligaciones Financieras respecto del arancel de carrera y sus formas de pago?",
+			"expected_answer": "El arancel de carrera es un valor anual fijado para cada carrera, independiente de las horas o créditos inscritos. Puede pagarse al contado de forma anual o semestral, o en cuotas; existen descuentos por pagos anuales o semestrales al contado hechos antes de la primera cuota, y si el estudiante cursa solo un semestre se paga el 50% del arancel anual.",
+			"references": [
+				{
+					"doc_id": "002-reglamento-de-obligaciones-financieras",
+					"title": "Reglamento de Obligaciones Financieras",
+					"page": 1,
+					"snippet": "Artículo 3°: El Arancel de Carrera, es el valor que se determina anualmente ... independientemente del número de horas... podrá ser pagado al contado ... o en cuotas. Existirá un porcentaje de descuento ... Si el estudiante permaneciere sólo un semestre académico, deberá pagar el 50% del arancel anual."
+				}
+			],
+			"rubric": [
+				"Debe señalar que el arancel se fija por carrera y no depende de créditos inscritos.",
+				"Debe describir las opciones de pago (contado anual/semestral con descuento y en cuotas).",
+				"Debe incluir el 50% en caso de cursar un solo semestre."
+			]
+		},
+		{
+			"id": "FIN-002",
+			"query": "¿Qué restricciones establece el artículo 8° para estudiantes con cuotas de arancel en mora?",
+			"expected_answer": "Los estudiantes morosos no pueden inscribir asignaturas en el semestre siguiente, ni formalizar matrícula en semestres posteriores, ni acceder al préstamo de libros a domicilio en las bibliotecas de la Universidad.",
+			"references": [
+				{
+					"doc_id": "002-reglamento-de-obligaciones-financieras",
+					"title": "Reglamento de Obligaciones Financieras",
+					"page": 2,
+					"snippet": "Artículo 8°: El estudiante que se encuentre en mora ... no podrá acceder a: a) Inscripción de asignaturas en el siguiente semestre académico. b) Formalizar matrícula ... c) Préstamos de libros a domicilio de cualquiera de las Bibliotecas..."
+				}
+			],
+			"rubric": [
+				"Debe enumerar las tres prohibiciones (inscribir, matricularse, préstamo de libros)."
+			]
+		},
+		{
+			"id": "FIN-003",
+			"query": "Resume las exenciones parciales descritas en el artículo 15° para estudiantes que han completado su plan y están en práctica o trabajo de título.",
+			"expected_answer": "Quienes solo realizan la práctica profesional (o práctica más trabajo de título simultáneo) pueden recibir hasta un 40% de exención del arancel de carrera durante la práctica. Quienes solo desarrollan el trabajo o seminario de título pueden optar a hasta 60% de rebaja en el primer semestre, hasta 40% en el segundo y hasta 20% en el tercero; semestres posteriores no tienen exención. Las resoluciones de decanato deben registrar periodos y porcentajes aplicados.",
+			"references": [
+				{
+					"doc_id": "002-reglamento-de-obligaciones-financieras",
+					"title": "Reglamento de Obligaciones Financieras",
+					"page": 3,
+					"snippet": "Artículo 15°: ... práctica profesional ... tendrán derecho a una exención de hasta el 40%... b) Estudiantes que estén realizando solamente su trabajo o Seminario de Título ... 1er semestre ... hasta 60% ... 2do semestre ... hasta 40% ... 3er semestre ... hasta 20% y siguientes sin exención..."
+				}
+			],
+			"rubric": [
+				"Debe distinguir entre práctica profesional (40%) y trabajo de título (60/40/20).",
+				"Debe mencionar que los decanatos formalizan el beneficio indicando periodos."
+			]
+		},
+		{
+			"id": "CONV-001",
+			"query": "¿Cuáles son las bases fundamentales de la convivencia universitaria según el artículo 2° del Reglamento de Convivencia Estudiantil?",
+			"expected_answer": "El artículo señala como bases el diálogo, el intercambio de ideas y la búsqueda de soluciones mediante el consenso y formas democráticas, para garantizar una convivencia pacífica y constructiva entre todos los integrantes de la comunidad universitaria.",
+			"references": [
+				{
+					"doc_id": "003-reglamento-de-convivencia-universitaria-estudiantil",
+					"title": "Reglamento de Convivencia Universitaria Estudiantil",
+					"page": 1,
+					"snippet": "ARTICULO 2º: Son bases fundamentales de la convivencia universitaria el diálogo, el intercambio de ideas, la búsqueda de soluciones a través del consenso y formas democráticas..."
+				}
+			],
+			"rubric": [
+				"Debe enumerar las tres bases (diálogo, intercambio de ideas, consenso/formas democráticas).",
+				"Debe vincularlas con el objetivo de convivencia pacífica/constructiva."
+			]
+		},
+		{
+			"id": "CONV-002",
+			"query": "Indica los derechos adicionales que reconoce el artículo 5° del Reglamento de Convivencia para el estudiantado.",
+			"expected_answer": "Reconoce, entre otros: el fuero dirigencial para representantes estudiantiles elegidos; el fuero maternal y paternal que garantiza facilidades por embarazo, parto o cuidado de hijas e hijos; el derecho a tarjeta de identificación universitaria gratuita (con una reposición anual); la posibilidad de representar a la Universidad en actividades externas; y el uso de espacios, recursos y equipamiento institucional previa autorización y con compromiso de devolución en buen estado.",
+			"references": [
+				{
+					"doc_id": "003-reglamento-de-convivencia-universitaria-estudiantil",
+					"title": "Reglamento de Convivencia Universitaria Estudiantil",
+					"page": 3,
+					"snippet": "ARTICULO 5º: ... reconoce, además, los siguientes derechos... a) Fuero dirigencial... b) Fuero maternal y paternal... c) Documento de identificación universitaria gratuita... d) Representar a la Universidad... e) Utilizar espacios, recursos o equipamiento..."
+				}
+			],
+			"rubric": [
+				"Debe identificar al menos cuatro derechos específicos mencionados en el artículo (incluyendo fuero dirigencial y maternal/paternal).",
+				"Debe describir las condiciones asociadas (por ejemplo, autorización para uso de espacios, reposición anual de credencial)."
+			]
+		},
+		{
+			"id": "CONV-003",
+			"query": "Describe brevemente cómo se inicia y desarrolla el proceso investigativo ante una denuncia de convivencia, según los artículos 13° a 22°.",
+			"expected_answer": "La denuncia escrita se presenta al Vicerrector Académico, quien en un máximo de cinco días hábiles decide si abre la investigación y, de hacerlo, dicta la resolución que designa al Fiscal. Las notificaciones se realizan personalmente o por carta certificada (o medio autorizado), y el Fiscal dispone de 20 días hábiles desde su designación para reunir antecedentes, citando denunciantes, inculpados y testigos y solicitando pruebas necesarias.",
+			"references": [
+				{
+					"doc_id": "003-reglamento-de-convivencia-universitaria-estudiantil",
+					"title": "Reglamento de Convivencia Universitaria Estudiantil",
+					"page": 5,
+					"snippet": "ARTICULO 13º: La denuncia se presentará por escrito ante la autoridad señalada ... ARTICULO 14º: ... el Vicerrector Académico deberá resolver, en un plazo no superior a 5 días hábiles ... ARTICULO 19º-22º: Las notificaciones ... y el Fiscal tendrá un plazo de 20 días hábiles..."
+				}
+			],
+			"rubric": [
+				"Debe indicar que la denuncia se presenta al Vicerrector Académico y el plazo de 5 días hábiles para decidir su apertura.",
+				"Debe mencionar la designación del Fiscal y el plazo de 20 días para investigar.",
+				"Debe aludir a la forma de las notificaciones (personal/carta certificada u otro medio autorizado)."
+			]
+		}
+	]
+}
