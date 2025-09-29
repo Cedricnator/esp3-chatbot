@@ -23,14 +23,20 @@ class FaissRetriever:
 		"""query rewriting/clarification using an LLM provider; fallback = identity."""
 		api_key = os.getenv("DEEPSEEK_API_KEY")
 		client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
+		system_prompt = """
+			You are an advanced retrieval specialist. Rewrite the user query into a single,
+			self-contained sentence that emphasizes key entities, expands acronyms, and adds relevant
+			synonyms so it becomes highly informative for semantic search. Remove pronouns and vague
+			references while keeping the intent unchanged. Write the query in the spanish language.
+  	"""
 		response = client.chat.completions.create(
 			model="deepseek/deepseek-chat-v3.1:free",
 			messages=[
-				{"role": "system", "content": "You are a rewriting assistant, rewrite the user query to be short and retrieval-friendly."},
+				{"role": "system", "content": system_prompt},
 				{"role": "user", "content": query}
 			],
-			max_tokens=50,
-			temperature=0.7,
+			max_tokens=80,
+			temperature=0.1,
 		)
 		choices = getattr(response, "choices", None)
 		first = choices[0] # type: ignore
