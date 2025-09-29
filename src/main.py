@@ -10,7 +10,7 @@ from rag.prompts import build_synthesis_prompt
 from adapters.arg_adapter import ArgAdapter
 from adapters.arg_parser import ArgParser
 from eval.evaluate import Evaluator, GoldSet, EvaluatorAgent
-
+from utils.checkpointer import CheckpointerRegister
 load_dotenv()
 
 class Main:
@@ -19,22 +19,22 @@ class Main:
         self.parser = arg
 
     def run(self):
+        checkpoint = CheckpointerRegister()
         provider = ""
         message = ""
         system_prompt = "You're a helpfull asistant"
         args = self.parser.parse()
-        
         faiss_index_path = "data/processed/index.faiss"
         chunks_path = "data/processed/chunks.parquet"
         mapping_path = "data/processed/mapping.parquet"
-
         retriever = FaissRetriever(faiss_index_path, chunks_path, mapping_path, self._logger)
         reranker = CrossEncoderReranker(self._logger)
         rag_orchestrator = RAGOrchestrator(retriever,self._logger, reranker)
-        
+        checkpoint.setCheckpoint("setup")
+
         if args.message:
             message = args.message
-            
+
         if args.rag is not False:
             self._logger.info("running rag...")
             query = message
@@ -43,12 +43,13 @@ class Main:
             self._logger.info("RAG result:")
             self._logger.info(f"{result}")
             system_prompt =  build_synthesis_prompt(result['query'], result['hints']) # type: ignore
+            checkpoint.setCheckpoint("rag")
         
         if args.evaluation is not False:
             self._logger.info("runnnig evaluation...")
             gold_set =  GoldSet("./gold_set.json", self._logger)
             deepseek_logger = LoggerStdin("deepseek_logger", "logs/deepseek.log")
-            d_provider = DeepSeekProvider(deepseek_logger)
+            d_provider = DeepSeekProvider(deepseek_logger, checkpoint)
             evaluator_agent = EvaluatorAgent(self._logger, gold_set)
             rag_orchestrator = RAGOrchestrator(retriever, self._logger, reranker) # type: ignore
 
@@ -59,6 +60,7 @@ class Main:
                 rag_orchestrator,
             )
             evaluator.run()
+            checkpoint.setCheckpoint("evaluation")
             return
 
         if args.provider:
@@ -67,20 +69,23 @@ class Main:
 
         if provider == "deepseek":
             deepseek_logger = LoggerStdin("deepseek_logger", "logs/deepseek.log")
-            deepseek_provider = DeepSeekProvider(deepseek_logger)
+            deepseek_provider = DeepSeekProvider(deepseek_logger, checkpoint)
             response = deepseek_provider.chat(system_prompt, message)
             self._logger.info("\nDeepSeek response:")
             self._logger.info(response)
+            checkpoint.setCheckpoint("deepseek-provider")
+            checkpoint.save()
         elif provider == "chatgpt":
             chatgpt_logger = LoggerStdin("chatgpt_logger", "logs/chatgpt.log")
             chatgpt_provider = ChatGPTProvider(chatgpt_logger)
             response = chatgpt_provider.chat(system_prompt,message)
             self._logger.info("\nChatGpt response:")
             self._logger.info(response)
+            checkpoint.setCheckpoint("chatgpt-provider")
+            checkpoint.save()
         else:
             self._logger.warning("Invalid provider, please select deepseek or chatgpt")
             return
-
 
 if __name__ == "__main__":
     main_logger = LoggerStdin("main", "logs/main.log")

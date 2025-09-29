@@ -4,11 +4,13 @@ from openai import OpenAI
 from typing import Any
 from provider.base import BaseProvider
 from adapters.logger_adapter import LoggerAdapter
+from utils.checkpointer import CheckpointerRegister
 
 class DeepSeekProvider(BaseProvider):
-    def __init__(self, logger: LoggerAdapter) -> None:
+    def __init__(self, logger: LoggerAdapter, checkpointerRegister: CheckpointerRegister) -> None:
         self._logger = logger
         self._provider = "DeepSeek"
+        self._checkpointerRegister = checkpointerRegister
 
     @property
     def name(self) -> str:
@@ -52,6 +54,7 @@ class DeepSeekProvider(BaseProvider):
             except Exception:
                 raw = repr(resp)
             self._logger.info(f"RAW DEEPSEEK RESPONSE: {raw}")
+            self._checkpointerRegister.addCost(raw)
 
             # Primary extraction
             try:

@@ -6,13 +6,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
 
 from adapters.logger_adapter import LoggerAdapter
-from adapters.logger_strdin import LoggerStdin
 from openai import OpenAI
 from provider.deepseek import DeepSeekProvider
 from rag.prompts import build_synthesis_prompt
 from rag.rag_orchestrator import RAGOrchestrator
-from rag.re_ranker import CrossEncoderReranker
-from rag.retrieve import FaissRetriever
 
 class GoldSet:
     def __init__(self, path: str, logger: LoggerAdapter) -> None:
@@ -349,35 +346,3 @@ class Evaluator:
             self.logger.error(f"Unable to persist evaluation results: {exc}")
 
         return evaluations
-
-
-def main() -> None:
-    evaluator_logger = LoggerStdin("evaluate", "logs/evaluate.log")
-    gold_set = GoldSet("gold_set.json", evaluator_logger)
-    evaluator_agent = EvaluatorAgent(evaluator_logger, gold_set)
-
-    faiss_index_path = "data/processed/index.faiss"
-    chunks_path = "data/processed/chunks.parquet"
-    mapping_path = "data/processed/mapping.parquet"
-
-    retriever = FaissRetriever(
-        faiss_index_path,
-        chunks_path,
-        mapping_path,
-        evaluator_logger,
-    )
-    reranker = CrossEncoderReranker(evaluator_logger)
-    rag_orchestrator = RAGOrchestrator(retriever, evaluator_logger, reranker)
-    deepseek_provider = DeepSeekProvider(evaluator_logger)
-
-    evaluator = Evaluator(
-        gold_set,
-        deepseek_provider,
-        evaluator_agent,
-        rag_orchestrator,
-    )
-    evaluator.run()
-
-
-if __name__ == "__main__":
-    main()
