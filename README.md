@@ -18,10 +18,18 @@ git clone https://github.com/Cedricnator/esp3-chatbot.git
 
 2. Crear y activar un entorno virtual:
 
+LINUX
 ```
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 ```
+
+WINDOWS
+```bash
+python3 -m venv .venv
+source .venv/Source/activate
+```
+
 3. Instalar dependencias:
 
 ```bash
