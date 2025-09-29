@@ -1,4 +1,3 @@
-import argparse
 from dotenv import load_dotenv
 from provider.chat_gpt import ChatGPTProvider
 from provider.deepseek import DeepSeekProvider
@@ -8,31 +7,21 @@ from rag.rag_orchestrator import RAGOrchestrator
 from rag.retrieve import FaissRetriever
 from rag.re_ranker import CrossEncoderReranker
 from rag.prompts import build_synthesis_prompt
+from adapters.arg_adapter import ArgAdapter
+from adapters.arg_parser import ArgParser
 
 load_dotenv()
 
 class Main:
-    def __init__(self, logger: LoggerAdapter) -> None:
+    def __init__(self, logger: LoggerAdapter, arg: ArgAdapter) -> None:
         self._logger = logger
+        self.parser = arg
 
     def run(self):
         provider = ""
         message = ""
         system_prompt = "You're a helpfull asistant"
-
-        parser = argparse.ArgumentParser(
-            description="Call DeepSeek provider with a message"
-        )
-        parser.add_argument(
-            "-m", "--message", help="Message to send to the provider", default=None
-        )
-        parser.add_argument(
-            "-p", "--provider", help="Select the provider to send the message", default=None
-        )
-        parser.add_argument(
-            "-r", "--rag", help="Load FAISS data given an input", default=False, type=bool
-        )
-        args = parser.parse_args()
+        args = self.parser.parse()
 
         if args.message:
             message = args.message
@@ -77,5 +66,6 @@ class Main:
 
 if __name__ == "__main__":
     main_logger = LoggerStdin("main", "logs/main.log")
-    main = Main(main_logger)
+    argsparser = ArgParser()
+    main = Main(main_logger, argsparser)
     main.run()
