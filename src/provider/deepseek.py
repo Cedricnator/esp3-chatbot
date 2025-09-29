@@ -34,7 +34,6 @@ class DeepSeekProvider(BaseProvider):
         client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 
         temperature = kwargs.pop("temperature", 0.2)
-        max_tokens = kwargs.pop("max_tokens", 256)
 
         try:
             resp = client.chat.completions.create(
@@ -44,7 +43,6 @@ class DeepSeekProvider(BaseProvider):
                     {"role": "user", "content": message},
                 ],
                 temperature=temperature,
-                max_tokens=max_tokens,
             )
 
             # Print raw response for debugging. If the SDK object has a to_dict()
