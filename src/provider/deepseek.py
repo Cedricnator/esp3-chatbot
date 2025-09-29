@@ -1,4 +1,4 @@
-
+import json
 import os
 from openai import OpenAI
 from typing import Any
@@ -16,7 +16,7 @@ class DeepSeekProvider(BaseProvider):
     def name(self) -> str:
         return self._provider
     
-    def chat(self, system_prompt: str, message: str, **kwargs: Any) -> Any:
+    def chat(self, system_prompt: str, message: str, **kwargs: Any):
         """
         Send a user message to OpenAI and return the assistant reply.
         Accepts optional kwargs: model, temperature, max_tokens, and any
@@ -52,34 +52,34 @@ class DeepSeekProvider(BaseProvider):
             except Exception:
                 raw = repr(resp)
             self._logger.info(f"RAW DEEPSEEK RESPONSE: {raw}")
-            self._checkpointerRegister.addCost(raw)
+            self._checkpointerRegister.addCost(json.dumps(raw))
 
             # Primary extraction
             try:
                 choices = getattr(resp, "choices", None)
                 if not choices:
                     # minimal fallback: try mapping access if attribute missing
-                    choices = resp.get("choices") if isinstance(resp, dict) else None # type: ignore
+                    choices = resp.get("choices") if isinstance(resp, dict) else None
 
-                if choices and len(choices) > 0: # type: ignore
-                    first = choices[0] # type: ignore
+                if choices and len(choices) > 0:
+                    first = choices[0]
                     # prefer .message.content
-                    msg = getattr(first, "message", None) # type: ignore
+                    msg = getattr(first, "message", None)
                     if msg is not None:
                         content = getattr(msg, "content", None)
                         if content:
                             return content.strip()
 
                     # next prefer .text on the choice
-                    text = getattr(first, "text", None) # type: ignore
+                    text = getattr(first, "text", None)
                     if text:
                         return text.strip()
 
                     # last resort: if first is a dict, try nested lookup
                     if isinstance(first, dict):
-                        text = first.get("message", {}).get("content") or first.get("text") # type: ignore
+                        text = first.get("message", {}).get("content") or first.get("text")
                         if text:
-                            return text.strip() # type: ignore
+                            return text.strip()
 
             except Exception as e:
                 # If extraction fails, include exception in the returned message
