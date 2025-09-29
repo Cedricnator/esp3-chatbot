@@ -82,5 +82,4 @@ class Calculator:
         completion_per_token = completion_cost_per_1k_usd / 1000.0
 
         total_usd = prompt_tokens * prompt_per_token + completion_tokens * completion_per_token
-        print(f'total_usd: {total_usd}') 
         return round(float(total_usd), 6)
