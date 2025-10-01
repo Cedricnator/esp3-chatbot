@@ -1,5 +1,7 @@
 services:
-  streamlit:
+  assistant-ufro.esp3.local:
+    container_name: assistant-ufro.esp3.local
+    hostname: assistant-ufro.esp3.local
     build:
       context: .
       dockerfile: build/Dockerfile
