@@ -9,14 +9,20 @@ from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 
 class FaissRetriever:
-	def __init__(self, indx_path: str, chunks_path: str, mapping_path: str, logger: LoggerAdapter) -> None:
+	def __init__(
+    self, 
+    indx_path: str, 
+    chunks_path: str, 
+    mapping_path: str, 
+    logger: LoggerAdapter
+  ) -> None:
 		self._logger = logger
 		self._model = SentenceTransformer("all-MiniLM-L6-v2")
 		self.index_path = Path(indx_path)
 		self.chunks_path = Path(chunks_path)
 		self.mapping_path = Path(mapping_path)
 		self.index = self.load_faiss_index(self.index_path) 
-		self.chunks, self.mapping = self.load_chunks_and_mapping(self.chunks_path, self.mapping_path)  # type: ignore
+		self.chunks, self.mapping = self.load_chunks_and_mapping(self.chunks_path, self.mapping_path) 
 		self._position_to_chunk = self._build_position_lookup()
 
 	def rewrite_query(self, query: str) -> str:
@@ -28,7 +34,7 @@ class FaissRetriever:
 			self-contained sentence that emphasizes key entities, expands acronyms, and adds relevant
 			synonyms so it becomes highly informative for semantic search. Remove pronouns and vague
 			references while keeping the intent unchanged. Write the query in the spanish language.
-  	"""
+    """
 		response = client.chat.completions.create(
 			model="deepseek/deepseek-chat-v3.1:free",
 			messages=[
@@ -55,7 +61,7 @@ class FaissRetriever:
 		# fallback to identity
 		return query
 
-	def load_chunks_and_mapping(self, chunks_path: str, mapping_path: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
+	def load_chunks_and_mapping(self, chunks_path: Path, mapping_path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
 		self._logger.info("Loading chunks and mapping...")
 		chunks = pd.read_parquet(chunks_path)
 		mapping = pd.read_parquet(mapping_path)

@@ -17,7 +17,7 @@ for candidate in (SRC_DIR, PROJECT_ROOT):
 		sys.path.insert(0, candidate_str)
 
 import streamlit as st
-
+from dotenv import load_dotenv
 from adapters.logger_strdin import LoggerStdin
 from provider.chat_gpt import ChatGPTProvider
 from provider.deepseek import DeepSeekProvider
@@ -26,6 +26,10 @@ from rag.rag_orchestrator import RAGOrchestrator
 from rag.re_ranker import CrossEncoderReranker
 from rag.retrieve import FaissRetriever
 from utils.checkpointer import CheckpointerRegister
+
+load_dotenv()
+
+LOGO_PATH = PROJECT_ROOT / "public" / "ufro_logo.png"
 
 
 # ---------------------------------------------------------------------------
@@ -199,11 +203,18 @@ logger = LoggerStdin("streamlit", "logs/streamlit.log")
 checkpointer = CheckpointerRegister()
 
 with st.sidebar:
-	st.image(
-		"https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Emblem_of_the_Universidad_de_La_Frontera.svg/240px-Emblem_of_the_Universidad_de_La_Frontera.svg.png",
-		caption="Universidad de La Frontera",
-		use_column_width=True,
-	)
+	if LOGO_PATH.exists():
+		st.image(
+			str(LOGO_PATH),
+			caption="Universidad de La Frontera",
+			width="stretch",
+		)
+	else:
+		st.image(
+			"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.facebook.com%2Fufro.temuco%2F&psig=AOvVaw09XgwKSrYuUaw_NqLOQi8H&ust=1759362878190000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCIjbgM3XgZADFQAAAAAdAAAAABAE",
+			caption="Universidad de La Frontera",
+			width="stretch",
+		)
 
 	st.markdown(
 		"""
@@ -301,11 +312,7 @@ if "history" not in st.session_state:
 		"Hola 👋 Soy tu asistente UFRO. Pregúntame por artículos específicos o reglas y te responderé citando las fuentes pertinentes.",
 	)
 
-with st.container():
-	st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-	for msg in st.session_state.history:
-		render_message(msg)
-	st.markdown('</div>', unsafe_allow_html=True)
+chat_container = st.container()
 
 
 # User Input
@@ -326,6 +333,12 @@ if user_prompt:
 		response_text,
 		metadata={"sources": hints, "provider": provider},
 	)
+
+with chat_container:
+	st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+	for msg in st.session_state.history:
+		render_message(msg)
+	st.markdown('</div>', unsafe_allow_html=True)
 
 
 
