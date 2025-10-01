@@ -1,0 +1,14 @@
+services:
+  streamlit:
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+    env_file:
+      - ./.env
+    volumes:
+      - ./src/streamlit:/src/streamlit
