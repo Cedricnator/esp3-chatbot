@@ -12,3 +12,10 @@ services:
       - ./.env
     volumes:
       - ./src/streamlit:/src/streamlit
+    networks:
+      - esp3_network
+
+networks:
+  esp3_network:
+    external: true
+      
