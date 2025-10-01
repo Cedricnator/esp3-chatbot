@@ -57,7 +57,6 @@ THEME_COLORS = {
 	"text_secondary": "#cbd5f5",
 }
 
-
 def inject_custom_css() -> None:
 	st.markdown(
 		f"""
@@ -121,8 +120,6 @@ inject_custom_css()
 # ---------------------------------------------------------------------------
 # Utilities & Providers
 # ---------------------------------------------------------------------------
-
-
 @lru_cache(maxsize=1)
 def get_rag_stack(logger: LoggerStdin) -> Tuple[FaissRetriever, RAGOrchestrator]:
 	index_path = "data/processed/index.faiss"

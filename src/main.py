@@ -49,17 +49,30 @@ class Main:
             self._logger.info("runnnig evaluation...")
             gold_set =  GoldSet("./gold_set.json", self._logger)
             deepseek_logger = LoggerStdin("deepseek_logger", "logs/deepseek.log")
-            d_provider = DeepSeekProvider(deepseek_logger, checkpoint)
+            chatgpt_logger = LoggerStdin("chatgpt_logger", "logs/chatgpt.log")
+            # d_provider = DeepSeekProvider(deepseek_logger, checkpoint)
             evaluator_agent = EvaluatorAgent(self._logger, gold_set)
             rag_orchestrator = RAGOrchestrator(retriever, self._logger, reranker) # type: ignore
 
-            evaluator = Evaluator(
+            # Evaluate DeepSeek
+            # deepseek_evaluator = Evaluator(
+            #     gold_set,                
+            #     d_provider,
+            #     evaluator_agent,
+            #     rag_orchestrator,
+            # )
+            # deepseek_evaluator.run()
+
+            # Evaluate ChatGPT
+            c_provider = ChatGPTProvider(chatgpt_logger, checkpoint)
+            chatgpt_evaluator = Evaluator(
                 gold_set,                
-                d_provider,
+                c_provider,
                 evaluator_agent,
                 rag_orchestrator,
             )
-            evaluator.run()
+            chatgpt_evaluator.run()
+
             checkpoint.setCheckpoint("evaluation")
             return
 
@@ -77,7 +90,7 @@ class Main:
             checkpoint.save()
         elif provider == "chatgpt":
             chatgpt_logger = LoggerStdin("chatgpt_logger", "logs/chatgpt.log")
-            chatgpt_provider = ChatGPTProvider(chatgpt_logger)
+            chatgpt_provider = ChatGPTProvider(chatgpt_logger, checkpoint)
             response = chatgpt_provider.chat(system_prompt,message)
             self._logger.info("\nChatGpt response:")
             self._logger.info(response)

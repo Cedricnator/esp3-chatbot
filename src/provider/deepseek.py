@@ -1,20 +1,31 @@
 import json
 import os
 from openai import OpenAI
-from typing import Any
+from typing import Any, Optional
 from provider.base import BaseProvider
 from adapters.logger_adapter import LoggerAdapter
 from utils.checkpointer import CheckpointerRegister
 
 class DeepSeekProvider(BaseProvider):
-    def __init__(self, logger: LoggerAdapter, checkpointerRegister: CheckpointerRegister) -> None:
+    def __init__(
+        self,
+        logger: LoggerAdapter,
+    checkpointerRegister: Optional[CheckpointerRegister] = None,
+        default_model: str = "deepseek/deepseek-chat-v3.1:free",
+    ) -> None:
         self._logger = logger
         self._provider = "DeepSeek"
         self._checkpointerRegister = checkpointerRegister
+        self._default_model = default_model
+        self._last_used_model: Optional[str] = None
 
     @property
     def name(self) -> str:
         return self._provider
+
+    @property
+    def last_used_model(self) -> Optional[str]:
+        return self._last_used_model
     
     def chat(self, system_prompt: str, message: str, **kwargs: Any):
         """
@@ -26,6 +37,7 @@ class DeepSeekProvider(BaseProvider):
         api_key = os.getenv("DEEPSEEK_API_KEY")
         if not api_key:
             # fallback for offline / test environments
+            self._last_used_model = self._default_model
             response = f"[DeepSeek fallback - no API key found] Received message: {message}"
             if kwargs:
                 response += f" with additional parameters: {kwargs}"
@@ -33,16 +45,19 @@ class DeepSeekProvider(BaseProvider):
 
         client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 
+        model = kwargs.pop("model", self._default_model)
         temperature = kwargs.pop("temperature", 0.2)
+        max_tokens = kwargs.pop("max_tokens", None)
 
         try:
             resp = client.chat.completions.create(
-                model="deepseek/deepseek-chat-v3.1:free",
+                model=model,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": message},
                 ],
                 temperature=temperature,
+                **({"max_tokens": max_tokens} if max_tokens is not None else {}),
             )
 
             # Print raw response for debugging. If the SDK object has a to_dict()
@@ -51,8 +66,15 @@ class DeepSeekProvider(BaseProvider):
                 raw = resp.to_dict() if hasattr(resp, "to_dict") else repr(resp)
             except Exception:
                 raw = repr(resp)
-            self._logger.info(f"RAW DEEPSEEK RESPONSE: {raw}")
-            self._checkpointerRegister.addCost(json.dumps(raw))
+            self._logger.info(
+                f"RAW DEEPSEEK RESPONSE: {raw}"
+            )
+            self._last_used_model = model
+            self._logger.info(
+                f"DeepSeekProvider executed with model '{model}'"
+            )
+            if self._checkpointerRegister is not None:
+                self._checkpointerRegister.addCost(json.dumps(raw))
 
             # Primary extraction
             try:
@@ -87,4 +109,5 @@ class DeepSeekProvider(BaseProvider):
 
             return "[DeepSeek error] unexpected response structure or empty reply"
         except Exception as e:
+            self._last_used_model = model
             return f"[DeepSeek error] {str(e)}"

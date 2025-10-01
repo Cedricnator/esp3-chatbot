@@ -4,10 +4,9 @@ import json
 import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
-
+from provider.base import BaseProvider
 from adapters.logger_adapter import LoggerAdapter
 from openai import OpenAI
-from provider.deepseek import DeepSeekProvider
 from rag.prompts import build_synthesis_prompt
 from rag.rag_orchestrator import RAGOrchestrator
 
@@ -68,25 +67,42 @@ class GoldSet:
 
 
 class EvaluatorAgent:
-    def __init__(self, logger: LoggerAdapter, gold_set: GoldSet) -> None:
+    def __init__(
+        self,
+        logger: LoggerAdapter,
+        gold_set: GoldSet,
+        model_name: Optional[str] = None,
+        base_url: Optional[str] = None,
+    ) -> None:
         self.gold = gold_set
         self.logger = logger
+        self.model_name = model_name or os.getenv("EVALUATION_MODEL", "openai/gpt-5-nano")
+        self.base_url = base_url or os.getenv(
+            "EVALUATION_BASE_URL", "https://openrouter.ai/api/v1"
+        )
+        self.last_metadata: Dict[str, Any] = {}
 
     def evaluator(self, chat_response: str, example: Dict[str, Any]) -> str:
         reference_block = self._build_reference_block(example)
+        self.last_metadata = {}
 
         api_key = os.getenv("DEEPSEEK_API_KEY")
         if not api_key:
             self.logger.warning(
                 "DEEPSEEK_API_KEY not set; returning fallback evaluation output"
             )
+            self.last_metadata = {
+                "model": self.model_name,
+                "base_url": self.base_url,
+                "error": "Missing DEEPSEEK_API_KEY",
+            }
             return (
                 "[Evaluator fallback] Missing DEEPSEEK_API_KEY; unable to score"
                 f". Modelo respondió: {chat_response[:200]}..."
             )
 
         try:
-            client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
+            client = OpenAI(api_key=api_key, base_url=self.base_url)
         except Exception as exc:
             self.logger.error(f"Cannot initialise evaluator client: {exc}")
             return f"[Evaluator error] {exc}"
@@ -109,9 +125,13 @@ class EvaluatorAgent:
         temperature = 0.1
         max_tokens = 250
 
+        self.logger.info(
+            f"Running evaluator with model '{self.model_name}' via {self.base_url}"
+        )
+
         try:
             resp = client.chat.completions.create(
-                model="deepseek/deepseek-chat-v3.1:free",
+                model=self.model_name,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_message},
@@ -127,6 +147,21 @@ class EvaluatorAgent:
                 self.logger.error(f"{exc}")
                 raw = repr(resp)
 
+            metadata: Dict[str, Any] = {
+                "model": getattr(resp, "model", None),
+                "provider": getattr(resp, "provider", None),
+                "base_url": self.base_url,
+            }
+            metadata.setdefault("model", self.model_name)
+            if hasattr(resp, "usage"):
+                metadata["usage"] = getattr(resp, "usage")
+            if isinstance(raw, dict):
+                metadata.setdefault("model", raw.get("model"))
+                metadata.setdefault("provider", raw.get("provider"))
+                if "usage" in raw:
+                    metadata.setdefault("usage", raw.get("usage"))
+            self.last_metadata = {k: v for k, v in metadata.items() if v is not None}
+
             raw_str = (
                 json.dumps(raw, ensure_ascii=False, indent=2)
                 if isinstance(raw, (dict, list))
@@ -138,6 +173,11 @@ class EvaluatorAgent:
             return evaluation_text or raw_str
         except Exception as exc:
             self.logger.error(f"Error in evaluator: {exc}")
+            self.last_metadata = {
+                "model": self.model_name,
+                "base_url": self.base_url,
+                "error": str(exc),
+            }
             return f"[Evaluator error] {exc}"
 
     @staticmethod
@@ -235,12 +275,12 @@ class Evaluator:
     def __init__(
         self,
         gold_set: GoldSet,
-        deepseek_provider: DeepSeekProvider,
+        base_provider: BaseProvider,
         evaluator_agent: EvaluatorAgent,
         rag_orchestrator: RAGOrchestrator,
     ) -> None:
         self._gold = gold_set
-        self._deepseek_provider = deepseek_provider
+        self._base_provider = base_provider
         self.evaluator_agent = evaluator_agent
         self.rag_orchestrator = rag_orchestrator
         self.logger = gold_set.logger
@@ -311,7 +351,7 @@ class Evaluator:
                         hints.append(cast(Dict[str, Any], hint_raw))
 
             system_prompt = build_synthesis_prompt(str(rewritten_query), hints)
-            answer = self._deepseek_provider.chat(
+            answer = self._base_provider.chat(
                 system_prompt,
                 query,
                 temperature=0.2,
@@ -320,6 +360,11 @@ class Evaluator:
             self.logger.info(f"Model answer for {example_id}: {answer}")
 
             evaluation_result = self.evaluator_agent.evaluator(str(answer), example)
+            evaluation_meta = getattr(self.evaluator_agent, "last_metadata", {}) or {}
+            generation_meta = {
+                "provider": getattr(self._base_provider, "name", None),
+                "model": getattr(self._base_provider, "last_used_model", None),
+            }
 
             record: Dict[str, Any] = {
                 "id": example_id,
@@ -331,6 +376,12 @@ class Evaluator:
                 "answer": answer,
                 "rag_hints": hints,
                 "evaluation": evaluation_result,
+                "generation_metadata": {
+                    k: v for k, v in generation_meta.items() if v is not None
+                },
+                "evaluation_metadata": {
+                    k: v for k, v in evaluation_meta.items() if v is not None
+                },
             }
             evaluations.append(record)
 
