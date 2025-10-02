@@ -1,0 +1,5 @@
+.env.example
+makefile
+pyproject.toml
+README.md
+uv.lock
