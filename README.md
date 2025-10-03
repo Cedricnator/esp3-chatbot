@@ -27,7 +27,7 @@ source .venv/bin/activate
 WINDOWS
 ```bash
 python3 -m venv .venv
-source .venv/Source/activate
+.\.venv\Scripts\activate
 ```
 
 3. Instalar dependencias:
