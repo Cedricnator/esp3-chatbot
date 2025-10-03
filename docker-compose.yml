@@ -1,10 +1,23 @@
 services:
+  qdrant-ufro.esp3.local:
+    container_name: qdrant-ufro.esp3.local
+    hostname: drant-ufro.esp3.local 
+    image: qdrant/qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage 
+    networks:
+      - esp3_network
+
   assistant-ufro.esp3.local:
     container_name: assistant-ufro.esp3.local
     hostname: assistant-ufro.esp3.local
     build:
       context: .
       dockerfile: build/Dockerfile
+    depends_on:
+      - qdrant-ufro.esp3.local
     ports:
       - "8501:8501"
     environment:
@@ -16,6 +29,11 @@ services:
       - ./src/streamlit:/src/streamlit
     networks:
       - esp3_network
+  
+volumes:
+  qdrant_storage:
+    driver: local
+  
 
 networks:
   esp3_network:
