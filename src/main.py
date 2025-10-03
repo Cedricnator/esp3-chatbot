@@ -41,7 +41,7 @@ class Main:
             query = message
             self._logger.info(f"Running RAG for query: {query}")
             result = rag_orchestrator.run(query, k_retrieve=args.topk, rerank_top_n=5, do_rewrite=True)
-            system_prompt =  build_synthesis_prompt(result['query'], result['hints']) # type: ignore
+            system_prompt =  build_synthesis_prompt(result['query'], result['hints'])
             checkpoint.setCheckpoint("rag")
         
         if args.evaluation is not False:
@@ -49,18 +49,17 @@ class Main:
             gold_set =  GoldSet("./gold_set.json", self._logger)
             deepseek_logger = LoggerStdin("deepseek_logger", "logs/deepseek.log")
             chatgpt_logger = LoggerStdin("chatgpt_logger", "logs/chatgpt.log")
-            # d_provider = DeepSeekProvider(deepseek_logger, checkpoint)
+            d_provider = DeepSeekProvider(deepseek_logger, checkpoint)
             evaluator_agent = EvaluatorAgent(self._logger, gold_set)
-            rag_orchestrator = RAGOrchestrator(retriever, self._logger, reranker) # type: ignore
-
+            rag_orchestrator = RAGOrchestrator(retriever, self._logger, reranker) 
             # Evaluate DeepSeek
-            # deepseek_evaluator = Evaluator(
-            #     gold_set,                
-            #     d_provider,
-            #     evaluator_agent,
-            #     rag_orchestrator,
-            # )
-            # deepseek_evaluator.run()
+            deepseek_evaluator = Evaluator(
+                gold_set,                
+                d_provider,
+                evaluator_agent,
+                rag_orchestrator,
+            )
+            deepseek_evaluator.run()
 
             # Evaluate ChatGPT
             c_provider = ChatGPTProvider(chatgpt_logger, checkpoint)
