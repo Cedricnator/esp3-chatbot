@@ -10,6 +10,7 @@ from rag.prompts import build_synthesis_prompt
 from adapters.arg_adapter import ArgAdapter
 from adapters.arg_parser import ArgParser
 from eval.evaluate import Evaluator, GoldSet, EvaluatorAgent
+from utils.demo import Demo
 from utils.checkpointer import CheckpointerRegister
 load_dotenv()
 
@@ -86,6 +87,7 @@ class Main:
             self._logger.info(response)
             checkpoint.setCheckpoint("deepseek-provider")
             checkpoint.save()
+            Demo.generate_demo(message, provider, response, [])
         elif provider == "chatgpt":
             chatgpt_logger = LoggerStdin("chatgpt_logger", "logs/chatgpt.log")
             chatgpt_provider = ChatGPTProvider(chatgpt_logger, checkpoint)
@@ -94,6 +96,7 @@ class Main:
             self._logger.info(response)
             checkpoint.setCheckpoint("chatgpt-provider")
             checkpoint.save()
+            Demo.generate_demo(message, provider, response, [])
         else:
             self._logger.warning("Invalid provider, please select deepseek or chatgpt")
             return
