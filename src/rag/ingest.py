@@ -3,14 +3,12 @@ import re
 from collections import Counter
 from pathlib import Path
 import sys
-import faiss # type: ignore
+import faiss 
 import numpy as np
-import pandas as pd  # type: ignore
+import pandas as pd 
 from sentence_transformers import SentenceTransformer
 from pdfminer.high_level import extract_text
-
-# pdfminer.extract_text supports page_numbers argument
-from pdfminer.pdfpage import PDFPage # type: ignore
+from pdfminer.pdfpage import PDFPage 
 from typing import Any, Dict, Optional, cast
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams

@@ -27,7 +27,7 @@ class RAGOrchestrator:
     if do_rewrite:
       try:
         self.logger.info("rewriting query...")
-        rewritten_query = self.retriever.rewrite_query(query)  # type: ignore[attr-defined]
+        rewritten_query = self.retriever.rewrite_query(query) 
         self.logger.info(f"rewrite: {rewritten_query}") 
       except Exception:
         rewritten_query = query
@@ -35,7 +35,7 @@ class RAGOrchestrator:
     df_ret = self.retriever.search(rewritten_query, top_k=k_retrieve)
     candidates: List[Dict[str, Any]] = []
     if not df_ret.empty:
-      rows = df_ret.to_dict(orient="records")  # type: ignore
+      rows = df_ret.to_dict(orient="records")
       candidates = [
         {str(key): value for key, value in row.items()}
         for row in rows
