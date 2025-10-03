@@ -16,6 +16,9 @@ class ArgParser(ArgAdapter):
       "-r", "--rag", help="Load FAISS data given an input", default=False, type=bool
     )
     parser.add_argument(
+      "-k", "--topk", help="Indicate wich topk use to the rag", default=5, type=int
+    )
+    parser.add_argument(
       "-e", "--evaluation", help="Evaluate the application", default=False, type=bool
     )
     return parser.parse_args()

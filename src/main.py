@@ -39,7 +39,7 @@ class Main:
             self._logger.info("running rag...")
             query = message
             self._logger.info(f"Running RAG for query: {query}")
-            result = rag_orchestrator.run(query, k_retrieve=5, rerank_top_n=5, do_rewrite=True)
+            result = rag_orchestrator.run(query, k_retrieve=args.topk, rerank_top_n=5, do_rewrite=True)
             system_prompt =  build_synthesis_prompt(result['query'], result['hints']) # type: ignore
             checkpoint.setCheckpoint("rag")
         
