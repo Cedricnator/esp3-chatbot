@@ -66,7 +66,6 @@ class ChatGPTProvider(BaseProvider):
                 raw = resp.to_dict() if hasattr(resp, "to_dict") else repr(resp)
             except Exception:
                 raw = repr(resp)
-            self._logger.info(f"RAW CHATGPT RESPONSE: {raw}")
             self._last_used_model = model
             self._logger.info(
                 f"ChatGPTProvider executed with model '{model}'"

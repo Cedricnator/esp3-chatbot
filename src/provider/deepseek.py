@@ -66,9 +66,6 @@ class DeepSeekProvider(BaseProvider):
                 raw = resp.to_dict() if hasattr(resp, "to_dict") else repr(resp)
             except Exception:
                 raw = repr(resp)
-            self._logger.info(
-                f"RAW DEEPSEEK RESPONSE: {raw}"
-            )
             self._last_used_model = model
             self._logger.info(
                 f"DeepSeekProvider executed with model '{model}'"

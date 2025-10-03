@@ -209,6 +209,150 @@
 				"Debe mencionar la designación del Fiscal y el plazo de 20 días para investigar.",
 				"Debe aludir a la forma de las notificaciones (personal/carta certificada u otro medio autorizado)."
 			]
+		},
+		{
+			"id": "RREP-004",
+			"query": "¿En qué casos permite el artículo 25° del Reglamento de Régimen de Estudios solicitar la anulación de asignaturas y qué pasos se deben seguir?",
+			"expected_answer": "La anulación puede pedirse mientras no se haya emitido el acta normal y el estudiante mantenga al menos una asignatura inscrita. Solo procede en dos situaciones: embarazo, posparto o adopción durante los primeros seis meses, y licencias médicas prolongadas por lesión física o salud mental certificadas por un médico. La solicitud se presenta al director de carrera, debe ser visada por el Servicio de Salud Estudiantil y tramitada ante la Dirección de Registro Académico Estudiantil dentro del plazo del calendario académico.",
+			"references": [
+				{
+					"doc_id": "000-reglamento-régimen-de-estudios-de-pregrado",
+					"title": "Reglamento Régimen de Estudios de Pregrado",
+					"page": 21,
+					"snippet": "ARTÍCULO 25º: Un(a) estudiante podrá solicitar ... siempre y cuando el acta normal ... y mantenga a lo menos una asignatura inscrita ... a. La estudiante ... embarazo ... b. Por lesión física, problemas de salud mental ... La solicitud debe venir visada por el Servicio de Salud Estudiantil ... El(La) director(a) de carrera tramita la solicitud a DIRAE ..."
+				}
+			],
+			"rubric": [
+				"Debe señalar que el acta no debe estar emitida y que debe quedar otra asignatura inscrita.",
+				"Debe describir las dos causales específicas (embarazo/posparto/adopción y licencias médicas prolongadas).",
+				"Debe mencionar el visado del Servicio de Salud Estudiantil y la tramitación por la dirección de carrera hacia DIRAE dentro del plazo respectivo."
+			]
+		},
+		{
+			"id": "RREP-005",
+			"query": "¿Qué condiciones fija el artículo 84° para que un estudiante pueda cursar un Minor en la Universidad de La Frontera?",
+			"expected_answer": "El artículo 84° autoriza a cualquier estudiante activo de pregrado a optar a un Minor siempre que cumpla las exigencias mínimas establecidas en el programa correspondiente, las cuales deben estar definidas en la reglamentación del propio Minor.",
+			"references": [
+				{
+					"doc_id": "000-reglamento-régimen-de-estudios-de-pregrado",
+					"title": "Reglamento Régimen de Estudios de Pregrado",
+					"page": 48,
+					"snippet": "ARTÍCULO 84º: Podrá optar a un Minor ... cualquier estudiante activo matriculado ... que cumpla con las exigencias mínimas que plantee el Programa de Minor establecidas en los aspectos reglamentarios del mismo."
+				}
+			],
+			"rubric": [
+				"Debe indicar que el beneficio es para estudiantes activos de pregrado.",
+				"Debe mencionar que deben cumplirse las exigencias mínimas fijadas por el programa de Minor.",
+				"Debe explicar que dichas exigencias se encuentran establecidas en la reglamentación del Minor."
+			]
+		},
+		{
+			"id": "ADM-004",
+			"query": "Según el artículo 26° del Reglamento de Admisión, ¿cómo se seleccionan las vacantes para la Admisión Especial de desempeño destacado en deporte, arte, música, PROENTA-UFRO o Bachillerato Internacional?",
+			"expected_answer": "Se convoca a matricular a los postulantes seleccionados que cumplen los requisitos de la vía especial, y la asignación depende de si la carrera tiene lista de espera: con lista, se elige a quien obtuvo el mayor puntaje ponderado en el Sistema de Admisión Regular; sin lista, se selecciona a quien registre el mayor puntaje ranking, hasta completar las vacantes.",
+			"references": [
+				{
+					"doc_id": "001-reglamento-de-admisión",
+					"title": "Reglamento de Admisión",
+					"page": 5,
+					"snippet": "Artículo 26º: Se convocará a formalizar la matrícula ... La o el postulante se seleccionará ... a. Si la carrera tiene lista de espera ... mayor puntaje ponderado ... b. Si la carrera no tiene lista ... mayor puntaje ranking ..."
+				}
+			],
+			"rubric": [
+				"Debe señalar que se convoca a los postulantes que cumplen con la vía especial.",
+				"Debe diferenciar el criterio cuando existe lista de espera (puntaje ponderado más alto).",
+				"Debe explicar el criterio cuando no hay lista de espera (puntaje ranking más alto)."
+			]
+		},
+		{
+			"id": "ADM-005",
+			"query": "¿Qué requisitos establece el artículo 46° para postular al Sistema de Admisión Especial por traslado desde otra institución de educación superior?",
+			"expected_answer": "El postulante debe ser estudiante sin impedimentos académicos en su carrera de origen, mantenerse como alumno regular en el semestre en curso y, si proviene de una institución chilena, haber obtenido al menos 475 puntos promedio en las pruebas obligatorias y 500 puntos ponderados al ingresar a su carrera. Para carreras de Pedagogía, además, debe cumplir con los requisitos de la Ley 20.129; la facultad puede fijar requisitos adicionales por resolución previa.",
+			"references": [
+				{
+					"doc_id": "001-reglamento-de-admisión",
+					"title": "Reglamento de Admisión",
+					"page": 8,
+					"snippet": "Artículo 46º: Se considera postulante ... requisitos: Ser estudiante sin impedimentos ... Ser alumno regular ... Haber obtenido al menos 475 puntos ... y 500 puntos ponderados ... en carreras de Pedagogía cumplir Ley 20.129. Además, cada Facultad podrá solicitar requisitos adicionales ..."
+				}
+			],
+			"rubric": [
+				"Debe indicar la condición académica en la carrera de origen (sin impedimentos y alumno regular).",
+				"Debe mencionar las exigencias de puntajes mínimos y la referencia a la Ley 20.129 para Pedagogía.",
+				"Debe señalar que las facultades pueden imponer requisitos adicionales mediante resolución."
+			]
+		},
+		{
+			"id": "FIN-004",
+			"query": "Detalla cómo establece el artículo 17° el cobro del arancel cuando un estudiante excede la duración nominal de su carrera.",
+			"expected_answer": "Si la permanencia excede hasta un año adicional, la Universidad puede cobrar hasta el 50% de la suma del arancel regulado y los derechos básicos de matrícula del período extra. Si el exceso es superior a un año, puede cobrar el 100% de esa suma, definiendo los porcentajes específicos mediante resolución exenta.",
+			"references": [
+				{
+					"doc_id": "002-reglamento-de-obligaciones-financieras",
+					"title": "Reglamento de Obligaciones Financieras",
+					"page": 4,
+					"snippet": "Artículo 17°: ... a) Si la permanencia excede en hasta un año ... podrá cobrar hasta el 50% ... b) Si la permanencia excede más de un año, podrá cobrar hasta el total ... Por Resolución Exenta se determinará el porcentaje ..."
+				}
+			],
+			"rubric": [
+				"Debe diferenciar el cobro cuando el exceso es de hasta un año (50%).",
+				"Debe indicar el cobro cuando supera un año (100%).",
+				"Debe mencionar que los porcentajes exactos se fijan mediante resolución exenta."
+			]
+		},
+		{
+			"id": "FIN-005",
+			"query": "¿Qué exige el artículo 20° a los estudiantes que quieren rendir examen de grado o título y qué excepciones contempla según la fecha fijada?",
+			"expected_answer": "Deben acreditar estar al día en el pago de sus aranceles. Si solo les falta el examen y este se fija para una fecha del segundo semestre, no se cobran aranceles del semestre; si se fija para el mes de inicio del año lectivo siguiente, hasta el último día hábil de ese mes no pagan arancel de inscripción; si la fecha es posterior, deben cancelar la cuota de inscripción correspondiente.",
+			"references": [
+				{
+					"doc_id": "002-reglamento-de-obligaciones-financieras",
+					"title": "Reglamento de Obligaciones Financieras",
+					"page": 4,
+					"snippet": "Artículo 20°: Para rendir Examen de Grado y/o Titulo ... deberá acreditar estar al día ... Aquellos estudiantes ... quedarán en alguna de las siguientes situaciones: Si el examen es fijado para alguna fecha del segundo semestre, no pagarán ... Si el examen es fijado para el mes de inicio del año lectivo siguiente ... no pagarán arancel de inscripción ... Si el examen es fijado para cualquier fecha posterior ... deberán pagar el arancel correspondiente a la cuota de inscripción."
+				}
+			],
+			"rubric": [
+				"Debe mencionar la obligación de estar al día en los aranceles.",
+				"Debe describir el beneficio cuando la fecha cae en el segundo semestre o en el mes inicial del siguiente año lectivo.",
+				"Debe indicar que si la fecha es posterior deben pagar la cuota de inscripción."
+			]
+		},
+		{
+			"id": "CONV-004",
+			"query": "Según el artículo 32° del Reglamento de Convivencia, ¿qué derechos y apoyos tiene la persona defensora del estudiante durante la audiencia?",
+			"expected_answer": "La defensora o defensor puede ser externo a la Universidad, tiene derecho a revisar los antecedentes recopilados por el Fiscal y puede pedir la incorporación de otros documentos al Tribunal de Convivencia. Además, la Federación de Estudiantes u organización equivalente debe proporcionarle defensa a quien no cuente con una propia, asumiendo los honorarios correspondientes.",
+			"references": [
+				{
+					"doc_id": "003-reglamento-de-convivencia-universitaria-estudiantil",
+					"title": "Reglamento de Convivencia Universitaria Estudiantil",
+					"page": 7,
+					"snippet": "ARTICULO 32º: ... El Defensor será el profesional encargado de la defensa ... podrá ser un externo ... tendrá derecho a examinar los antecedentes recopilados ... podrá solicitar ... la agregación de antecedentes ... En caso de que la o el estudiante no cuente con defensa privada ... la Federación de Estudiantes ... le proporcionará uno, siendo de cargo de ésta el pago de los honorarios."
+				}
+			],
+			"rubric": [
+				"Debe indicar que la defensa puede ser externa a la Universidad.",
+				"Debe mencionar el derecho a revisar antecedentes y pedir nuevos documentos.",
+				"Debe señalar el apoyo de la Federación de Estudiantes u organismo equivalente cuando no hay defensa privada."
+			]
+		},
+		{
+			"id": "CONV-005",
+			"query": "Enumera las circunstancias atenuantes previstas en el artículo 46° del Reglamento de Convivencia Estudiantil y explica su efecto.",
+			"expected_answer": "El artículo identifica como atenuantes no haber sido sancionado previamente en el ámbito universitario y reparar diligentemente el daño causado o evitar sus consecuencias. Cuando concurren, permiten que el hecho sea considerado con menor gravedad al momento de determinar la sanción.",
+			"references": [
+				{
+					"doc_id": "003-reglamento-de-convivencia-universitaria-estudiantil",
+					"title": "Reglamento de Convivencia Universitaria Estudiantil",
+					"page": 8,
+					"snippet": "ARTICULO 46º: Serán circunstancias atenuantes: No haber sido objeto de sanción en el ámbito universitario. Reparar con celo el mal causado o impedir sus perniciosas y ulteriores consecuencias."
+				}
+			],
+			"rubric": [
+				"Debe enumerar las dos circunstancias atenuantes señaladas en el artículo.",
+				"Debe explicar que su efecto es disminuir la gravedad al momento de sancionar.",
+				"Debe vincular las atenuantes con el contexto disciplinario universitario."
+			]
 		}
 	]
 }
