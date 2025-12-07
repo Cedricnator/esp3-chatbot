@@ -222,7 +222,11 @@ async def chat(request: ChatRequest):
                 detail=f"Proveedor no válido: {request.provider}"
             )
         
-        logger.info(f"Respuesta generada exitosamente con {request.provider}")
+        logger.info(f"✓ Respuesta generada exitosamente con {request.provider}")
+        logger.info(f"📝 Respuesta del agente ({len(response_text)} caracteres):")
+        logger.info(f"{'='*80}")
+        logger.info(response_text)
+        logger.info(f"{'='*80}")
         
         return ChatResponse(
             response=response_text,
