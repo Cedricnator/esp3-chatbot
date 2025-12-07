@@ -4,13 +4,26 @@ ENV TZ=America/Santiago
 
 WORKDIR /app
 
+# Copiar archivos de dependencias
 COPY requirements.txt .
+COPY pyproject.toml .
+
+# Instalar dependencias
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt && \
     rm -rf ~/.cache/pip
 
-COPY . .
+# Copiar código fuente
+COPY src/ ./src/
+COPY data/ ./data/
+COPY run_api.py .
+COPY .env.example .env
 
-EXPOSE 8501
+# Crear directorios necesarios
+RUN mkdir -p logs
 
-CMD ["streamlit", "run", "src/streamlit/streamlit.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Exponer puerto de la API
+EXPOSE 33201
+
+# Ejecutar la API
+CMD ["python", "run_api.py"]
