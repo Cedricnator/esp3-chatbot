@@ -6,7 +6,6 @@ WORKDIR /app
 
 # Copiar archivos de dependencias
 COPY requirements.txt .
-COPY pyproject.toml .
 
 # Instalar dependencias
 RUN pip install --upgrade pip && \
@@ -17,7 +16,6 @@ RUN pip install --upgrade pip && \
 COPY src/ ./src/
 COPY data/ ./data/
 COPY run_api.py .
-COPY .env.example .env
 
 # Crear directorios necesarios
 RUN mkdir -p logs
