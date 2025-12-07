@@ -1,14 +1,14 @@
 services:
   qdrant-ufro.esp3.local:
     container_name: qdrant-ufro.esp3.local
-    hostname: drant-ufro.esp3.local 
+    hostname: drant-ufro.esp3.local
     image: qdrant/qdrant
     ports:
       - "6333:6333"
     volumes:
-      - qdrant_storage:/qdrant/storage 
+      - qdrant_storage:/qdrant/storage
     networks:
-      - esp3_network
+      - esp3-network
 
   assistant-ufro.esp3.local:
     container_name: assistant-ufro.esp3.local
@@ -30,14 +30,12 @@ services:
       - ./data:/app/data
       - ./logs:/app/logs
     networks:
-      - esp3_network
-  
+      - esp3-network
+
 volumes:
   qdrant_storage:
     driver: local
-  
 
 networks:
-  esp3_network:
+  esp3-network:
     external: true
-      
