@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -21,19 +22,72 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Crear aplicación FastAPI
+# Recursos compartidos de la aplicación
+shared_resources = {}
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Gestión del ciclo de vida de la aplicación.
+    Código antes del yield se ejecuta al inicio, después del yield al cerrar.
+    """
+    # Startup: Inicializar componentes
+    logger.info("🚀 Aplicación iniciándose...")
+    logger.info("Inicializando componentes del chatbot...")
+    
+    # Configurar rutas
+    faiss_index_path = "data/processed/index.faiss"
+    chunks_path = "data/processed/chunks.parquet"
+    mapping_path = "data/processed/mapping.parquet"
+    
+    # Inicializar RAG
+    rag_logger = LoggerStdin("rag_logger", "logs/api_rag.log")
+    retriever = FaissRetriever(
+        faiss_index_path,
+        chunks_path,
+        mapping_path,
+        rag_logger
+    )
+    reranker = CrossEncoderReranker(rag_logger)
+    rag_orchestrator = RAGOrchestrator(
+        retriever,
+        rag_logger,
+        reranker
+    )
+    
+    # Loggers para proveedores
+    deepseek_logger = LoggerStdin("deepseek_api_logger", "logs/api_deepseek.log")
+    chatgpt_logger = LoggerStdin("chatgpt_api_logger", "logs/api_chatgpt.log")
+    
+    # Guardar en recursos compartidos
+    shared_resources["rag_orchestrator"] = rag_orchestrator
+    shared_resources["deepseek_logger"] = deepseek_logger
+    shared_resources["chatgpt_logger"] = chatgpt_logger
+    shared_resources["initialized"] = True
+    
+    logger.info("✓ Componentes inicializados correctamente")
+    
+    yield  # La aplicación se ejecuta aquí
+    
+    # Shutdown: Limpiar recursos
+    logger.info("Aplicación cerrándose...")
+    shared_resources.clear()
+    logger.info("✓ Recursos liberados correctamente")
+
+# Crear aplicación FastAPI con lifespan
 app = FastAPI(
     title="Chatbot Universitario API",
     description="API REST para interactuar con el chatbot de información universitaria usando RAG",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Habilitar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, especificar orígenes exactos
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -71,59 +125,6 @@ class HealthResponse(BaseModel):
     service: str
     version: str
 
-# Inicializar componentes (singleton pattern)
-class ChatbotComponents:
-    """Componentes singleton del chatbot."""
-    _instance = None
-    
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance._initialized = False
-        return cls._instance
-    
-    def initialize(self):
-        """Inicializar componentes una sola vez."""
-        if self._initialized:
-            return
-        
-        logger.info("Inicializando componentes del chatbot...")
-        
-        # Configurar rutas
-        self.faiss_index_path = "data/processed/index.faiss"
-        self.chunks_path = "data/processed/chunks.parquet"
-        self.mapping_path = "data/processed/mapping.parquet"
-        
-        # Inicializar RAG
-        rag_logger = LoggerStdin("rag_logger", "logs/api_rag.log")
-        self.retriever = FaissRetriever(
-            self.faiss_index_path,
-            self.chunks_path,
-            self.mapping_path,
-            rag_logger
-        )
-        self.reranker = CrossEncoderReranker(rag_logger)
-        self.rag_orchestrator = RAGOrchestrator(
-            self.retriever,
-            rag_logger,
-            self.reranker
-        )
-        
-        # Loggers para proveedores
-        self.deepseek_logger = LoggerStdin("deepseek_api_logger", "logs/api_deepseek.log")
-        self.chatgpt_logger = LoggerStdin("chatgpt_api_logger", "logs/api_chatgpt.log")
-        
-        self._initialized = True
-        logger.info("✓ Componentes inicializados correctamente")
-
-# Instancia global de componentes
-components = ChatbotComponents()
-
-@app.on_event("startup")
-async def startup_event():
-    """Inicializar componentes al arrancar la aplicación."""
-    components.initialize()
-
 @app.get("/", response_model=HealthResponse, tags=["Health"])
 async def root():
     """
@@ -142,7 +143,7 @@ async def health_check():
     Health check detallado.
     Verifica que todos los componentes estén inicializados.
     """
-    if not components._initialized:
+    if not shared_resources.get("initialized", False):
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Componentes no inicializados"
@@ -182,7 +183,8 @@ async def chat(request: ChatRequest):
         # Ejecutar RAG si está habilitado
         if request.use_rag:
             logger.info(f"Ejecutando RAG con top_k={request.top_k}")
-            rag_result = components.rag_orchestrator.run(
+            rag_orchestrator = shared_resources["rag_orchestrator"]
+            rag_result = rag_orchestrator.run(
                 request.message,
                 k_retrieve=request.top_k,
                 rerank_top_n=5,
@@ -194,10 +196,12 @@ async def chat(request: ChatRequest):
         
         # Seleccionar proveedor y generar respuesta
         if request.provider == "deepseek":
-            provider = DeepSeekProvider(components.deepseek_logger, checkpoint)
+            deepseek_logger = shared_resources["deepseek_logger"]
+            provider = DeepSeekProvider(deepseek_logger, checkpoint)
             response_text = provider.chat(system_prompt, request.message)
         elif request.provider == "chatgpt":
-            provider = ChatGPTProvider(components.chatgpt_logger, checkpoint)
+            chatgpt_logger = shared_resources["chatgpt_logger"]
+            provider = ChatGPTProvider(chatgpt_logger, checkpoint)
             response_text = provider.chat(system_prompt, request.message)
         else:
             raise HTTPException(
