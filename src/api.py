@@ -155,7 +155,7 @@ async def health_check():
         version="1.0.0"
     )
 
-@app.post("/chat", response_model=ChatResponse, tags=["Chat"])
+@app.post("/ask", response_model=ChatResponse, tags=["Ask"])
 async def chat(request: ChatRequest):
     """
     Endpoint principal para interactuar con el chatbot.
@@ -231,7 +231,7 @@ async def chat(request: ChatRequest):
             detail=f"Error interno del servidor: {str(e)}"
         )
 
-@app.post("/chat/simple", tags=["Chat"])
+@app.post("/ask/simple", tags=["Ask"])
 async def chat_simple(message: str, provider: str = "deepseek"):
     """
     Endpoint simplificado para chat rápido.
