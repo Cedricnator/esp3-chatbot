@@ -23,7 +23,7 @@ COPY .env.example .env
 RUN mkdir -p logs
 
 # Exponer puerto de la API
-EXPOSE 33201
+EXPOSE 33209
 
 # Ejecutar la API
 CMD ["python", "run_api.py"]

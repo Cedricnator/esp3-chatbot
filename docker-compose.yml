@@ -19,7 +19,7 @@ services:
     depends_on:
       - qdrant-ufro.esp3.local
     ports:
-      - "33201:33201"
+      - "33209:33209"
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
