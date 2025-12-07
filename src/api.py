@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, Literal
 from dotenv import load_dotenv
 import logging
+import asyncio
 
 from provider.chat_gpt import ChatGPTProvider
 from provider.deepseek import DeepSeekProvider
@@ -97,19 +98,19 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     """Modelo de solicitud para el endpoint de chat."""
     message: str = Field(..., description="Mensaje del usuario", min_length=1, max_length=2000)
-    provider: Optional[Literal["chatgpt", "deepseek"]] = Field(
-        default="chatgpt",
-        description="Proveedor de LLM a utilizar (opcional, por defecto chatgpt)"
+    provider: Literal["chatgpt", "deepseek"] = Field(
+        default="deepseek",
+        description="Proveedor de LLM a utilizar"
     )
-    use_rag: Optional[bool] = Field(
+    use_rag: bool = Field(
         default=True,
-        description="Si se debe usar RAG para recuperar contexto (opcional, por defecto True)"
+        description="Si se debe usar RAG para recuperar contexto"
     )
-    top_k: Optional[int] = Field(
+    top_k: int = Field(
         default=5,
         ge=1,
         le=20,
-        description="Número de documentos a recuperar con RAG (opcional, por defecto 5)"
+        description="Número de documentos a recuperar con RAG"
     )
 
 class ChatResponse(BaseModel):
@@ -184,7 +185,9 @@ async def chat(request: ChatRequest):
         if request.use_rag:
             logger.info(f"Ejecutando RAG con top_k={request.top_k}")
             rag_orchestrator = shared_resources["rag_orchestrator"]
-            rag_result = rag_orchestrator.run(
+            # Ejecutar RAG en thread separado para no bloquear
+            rag_result = await asyncio.to_thread(
+                rag_orchestrator.run,
                 request.message,
                 k_retrieve=request.top_k,
                 rerank_top_n=5,
@@ -198,11 +201,21 @@ async def chat(request: ChatRequest):
         if request.provider == "deepseek":
             deepseek_logger = shared_resources["deepseek_logger"]
             provider = DeepSeekProvider(deepseek_logger, checkpoint)
-            response_text = provider.chat(system_prompt, request.message)
+            # Ejecutar llamada al LLM en thread separado
+            response_text = await asyncio.to_thread(
+                provider.chat,
+                system_prompt,
+                request.message
+            )
         elif request.provider == "chatgpt":
             chatgpt_logger = shared_resources["chatgpt_logger"]
             provider = ChatGPTProvider(chatgpt_logger, checkpoint)
-            response_text = provider.chat(system_prompt, request.message)
+            # Ejecutar llamada al LLM en thread separado
+            response_text = await asyncio.to_thread(
+                provider.chat,
+                system_prompt,
+                request.message
+            )
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -213,8 +226,8 @@ async def chat(request: ChatRequest):
         
         return ChatResponse(
             response=response_text,
-            provider=request.provider or "chatgpt",
-            rag_used=request.use_rag or False,
+            provider=request.provider,
+            rag_used=request.use_rag,
             context_chunks=context_chunks
         )
         
@@ -231,8 +244,8 @@ async def chat(request: ChatRequest):
             detail=f"Error interno del servidor: {str(e)}"
         )
 
-@app.post("/chat/simple", tags=["Chat"])
-async def chat_simple(message: str, provider: Optional[str] = "chatgpt"):
+@app.post("/ask/simple", tags=["Ask"])
+async def chat_simple(message: str, provider: str = "deepseek"):
     """
     Endpoint simplificado para chat rápido.
     
@@ -240,7 +253,7 @@ async def chat_simple(message: str, provider: Optional[str] = "chatgpt"):
     
     Args:
         message: Mensaje del usuario
-        provider: Proveedor LLM (chatgpt o deepseek, opcional, por defecto chatgpt)
+        provider: Proveedor LLM (chatgpt o deepseek)
         
     Returns:
         Respuesta del chatbot como texto plano
@@ -256,6 +269,19 @@ async def chat_simple(message: str, provider: Optional[str] = "chatgpt"):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Proveedor debe ser 'chatgpt' o 'deepseek'"
         )
+    
+    # Cast explícito para satisfacer el type checker
+    provider_typed: Literal["chatgpt", "deepseek"] = provider  # type: ignore
+    
+    request = ChatRequest(
+        message=message,
+        provider=provider_typed,
+        use_rag=True,
+        top_k=5
+    )
+    
+    result = await chat(request)
+    return {"response": result.response}
 
 if __name__ == "__main__":
     import uvicorn
