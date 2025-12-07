@@ -98,15 +98,15 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     """Modelo de solicitud para el endpoint de chat."""
     message: str = Field(..., description="Mensaje del usuario", min_length=1, max_length=2000)
-    provider: Literal["chatgpt", "deepseek"] = Field(
-        default="deepseek",
-        description="Proveedor de LLM a utilizar"
+    provider: Optional[Literal["chatgpt", "deepseek"]] = Field(
+        default="chatgpt",
+        description="Proveedor de LLM a utilizar (opcional, por defecto chatgpt)"
     )
-    use_rag: bool = Field(
+    use_rag: Optional[bool] = Field(
         default=True,
-        description="Si se debe usar RAG para recuperar contexto"
+        description="Si se debe usar RAG para recuperar contexto (opcional, por defecto True)"
     )
-    top_k: int = Field(
+    top_k: Optional[int] = Field(
         default=5,
         ge=1,
         le=20,
@@ -226,8 +226,8 @@ async def chat(request: ChatRequest):
         
         return ChatResponse(
             response=response_text,
-            provider=request.provider,
-            rag_used=request.use_rag,
+            provider=request.provider or "chatgpt",
+            rag_used=request.use_rag if request.use_rag is not None else True,
             context_chunks=context_chunks
         )
         
